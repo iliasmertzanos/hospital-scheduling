@@ -1,5 +1,5 @@
 # App description
-This application provides functionalities, so that patient treatment appointments can be scheduled taking into account the plan and availability of the medical doctors as well as the free capacities of the hospital.
+This application provides functionalities based on microservices architecture, so that patient treatment appointments can be scheduled taking into account the plan and availability of the medical doctors as well as the free capacities of the hospital.
 
 ## Stack
 - **Java 1.8**

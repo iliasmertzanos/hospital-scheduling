@@ -15,9 +15,9 @@ import javax.persistence.ManyToOne;
 import org.hibernate.engine.jdbc.SerializableClobProxy;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.RejectionReason;
-import com.hospital.appointment.models.Patient;
 
 import lombok.Data;
 

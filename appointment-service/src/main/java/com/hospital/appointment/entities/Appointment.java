@@ -1,4 +1,4 @@
-package com.hospital.appointment.models;
+package com.hospital.appointment.entities;
 
 import java.time.LocalDateTime;
 

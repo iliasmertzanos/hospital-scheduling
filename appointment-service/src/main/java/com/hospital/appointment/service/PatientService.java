@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.PatientDTO;
+import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.enums.Dicease;
-import com.hospital.appointment.models.Appointment;
 
 public interface PatientService {
 

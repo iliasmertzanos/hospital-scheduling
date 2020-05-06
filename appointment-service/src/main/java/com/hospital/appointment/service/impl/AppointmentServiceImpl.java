@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hospital.appointment.dto.AppointmentDTO;
+import com.hospital.appointment.entities.Appointment;
+import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.events.producer.ProducerService;
-import com.hospital.appointment.models.Appointment;
-import com.hospital.appointment.models.Patient;
 import com.hospital.appointment.repositories.AppointmentRepository;
 import com.hospital.appointment.repositories.PatientRepository;
 import com.hospital.appointment.service.AppointmentService;

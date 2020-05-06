@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.PatientDTO;
+import com.hospital.appointment.entities.Appointment;
+import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.Dicease;
-import com.hospital.appointment.models.Appointment;
-import com.hospital.appointment.models.Patient;
 import com.hospital.appointment.repositories.AppointmentRepository;
 import com.hospital.appointment.repositories.PatientRepository;
 import com.hospital.appointment.service.PatientService;
