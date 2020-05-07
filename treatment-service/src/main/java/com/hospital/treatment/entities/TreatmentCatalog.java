@@ -30,7 +30,7 @@ public class TreatmentCatalog {
 	@Column(name="on_private_expences")
 	private Boolean onPrivateExpences;
 	
-	@Column(name="dicease_code")
+	@Enumerated(EnumType.STRING)
 	private Dicease diceaseCode;
 	
 	@Column
