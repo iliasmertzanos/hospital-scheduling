@@ -3,7 +3,7 @@ package com.hospital.appointment.service;
 import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 
 public interface AppointmentService {
 

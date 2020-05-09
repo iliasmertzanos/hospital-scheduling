@@ -44,7 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		
 		mySavedAppointment.setPatient(myExistingPatient);
 		myExistingPatient.getAppointment().add(mySavedAppointment);
-		myExistingPatient.setDicease(myAppointment.getPatient().getDicease());
+		myExistingPatient.setDisease(myAppointment.getPatient().getDisease());
 		
 		
 		myPatientRepo.saveAndFlush(myExistingPatient);

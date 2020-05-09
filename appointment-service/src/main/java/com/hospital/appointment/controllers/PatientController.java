@@ -11,7 +11,7 @@ import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Patient;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.exception.PatientNotExistsException;
 import com.hospital.appointment.sagas.SagaOrchestrator;

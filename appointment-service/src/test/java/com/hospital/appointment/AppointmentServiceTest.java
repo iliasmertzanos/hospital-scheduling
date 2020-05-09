@@ -21,7 +21,7 @@ import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.enums.AppointmentState;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.enums.RejectionReason;
 import com.hospital.appointment.events.consumer.ConsumerServiceTest;
@@ -65,7 +65,7 @@ public class AppointmentServiceTest {
     	PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
 		myPatient.setFinancialApproved(true);
-		myPatient.setDicease(Dicease.ASTHMA);
+		myPatient.setDisease(Disease.ASTHMA);
 		
 		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
 		myPayload.setPatient(myPatient);
@@ -115,7 +115,7 @@ public class AppointmentServiceTest {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
 		myPatient.setFinancialApproved(true);
-		myPatient.setDicease(Dicease.ASTHMA);
+		myPatient.setDisease(Disease.ASTHMA);
 		
 		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
 		myPayload.setPatient(myPatient);
@@ -155,7 +155,7 @@ public class AppointmentServiceTest {
 	public void test_newAppointmentreceived_and_was_rejected() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setDicease(Dicease.ASTHMA);
+		myPatient.setDisease(Disease.ASTHMA);
 		
 		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
 		myPayload.setPatient(myPatient);
@@ -191,7 +191,7 @@ public class AppointmentServiceTest {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
 		myPatient.setFinancialApproved(true);
-		myPatient.setDicease(Dicease.ASTHMA);
+		myPatient.setDisease(Disease.ASTHMA);
 		
 		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
 		myPayload.setPatient(myPatient);
@@ -246,7 +246,7 @@ public class AppointmentServiceTest {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
 		myPatient.setFinancialApproved(true);
-		myPatient.setDicease(Dicease.ASTHMA);
+		myPatient.setDisease(Disease.ASTHMA);
 		
 		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
 		myPayload.setPatient(myPatient);

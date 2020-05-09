@@ -1,6 +1,6 @@
 package com.hospital.appointment.enums;
 
-public enum Dicease {
+public enum Disease {
 	//ENDOCRINOLOGY
 	DIAB_TYP_1("Type 1 Diabetes") 
 	,DIAB_TYP_2("Type 2 Diabetes")
@@ -28,7 +28,7 @@ public enum Dicease {
 
 	String description;
 
-	Dicease(String description) {
+	Disease(String description) {
 		this.description=description;
 	}
 	

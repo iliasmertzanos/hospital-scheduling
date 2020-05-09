@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +31,7 @@ public class PatientDTO implements Serializable {
 	
 	private Long insuranceId;
 	
-	private Dicease dicease;
+	private Disease disease;
 	
 	private boolean financialApproved;
 	

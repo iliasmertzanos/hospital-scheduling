@@ -6,7 +6,7 @@ import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.entities.Patient;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 
 public interface PatientService {
 

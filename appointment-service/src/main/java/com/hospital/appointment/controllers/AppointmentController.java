@@ -11,7 +11,7 @@ import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Patient;
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.exception.PatientNotExistsException;
 import com.hospital.appointment.sagas.SagaOrchestrator;
@@ -33,7 +33,7 @@ public class AppointmentController {
 	private ModelMapper modelMapper=new ModelMapper();
 	
 	 @PostMapping("/patient/{id}/dicease/{dicease}")
-	 public AppointmentDTO saveNewAppointment( @PathVariable Long id ,@PathVariable Dicease dicease)  {
+	 public AppointmentDTO saveNewAppointment( @PathVariable Long id ,@PathVariable Disease disease)  {
 		 //check if patient exists
 		 PatientDTO myPatient=myPatientService.getById(id);
 		 

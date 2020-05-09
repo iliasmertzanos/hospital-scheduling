@@ -13,7 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import com.hospital.appointment.enums.Dicease;
+import com.hospital.appointment.enums.Disease;
 
 import lombok.Data;
 
@@ -46,7 +46,7 @@ public class Patient {
 	@Column
 	@NotNull
 	@Enumerated(EnumType.STRING)
-	private Dicease dicease;
+	private Disease disease;
 	
 	@OneToMany(
 			fetch = FetchType.EAGER,
