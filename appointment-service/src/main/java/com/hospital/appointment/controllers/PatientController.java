@@ -24,28 +24,15 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/appointments")
-public class AppointmentController {
+@RequestMapping("/patients")
+public class PatientController {
 	
 	private final PatientService myPatientService;
-	private final SagaOrchestrator mySagaOrchestrator;
 	
 	private ModelMapper modelMapper=new ModelMapper();
-	
-	 @PostMapping("/patient/{id}/dicease/{dicease}")
-	 public AppointmentDTO saveNewAppointment( @PathVariable Long id ,@PathVariable Dicease dicease)  {
-		 //check if patient exists
-		 PatientDTO myPatient=myPatientService.getById(id);
-		 
-		 //if true save new Appointment and update patient appointment list 
-		 if(myPatient==null) {
-			 throw new PatientNotExistsException("Patient with ID:"+ id +" does't exists.");
-		 }else {
-			 AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-			 myPayload.setPatient(myPatient);
-			 myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
-			 
-			return mySagaOrchestrator.handleAppointmentSaga(myPayload);
-		 }
+	 
+	 @PostMapping
+	 public PatientDTO saveNewPatient( @RequestBody PatientDTO patient)  {
+		 return this.myPatientService.savePatient(modelMapper.map(patient,Patient.class));
 	 }
 }

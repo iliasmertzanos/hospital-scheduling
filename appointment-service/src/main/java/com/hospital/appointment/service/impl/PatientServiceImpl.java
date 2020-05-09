@@ -54,4 +54,9 @@ public class PatientServiceImpl implements PatientService {
 		
 	}
 
+	@Override
+	public PatientDTO savePatient(Patient patient) {
+		return modelMapper.map(this.myPatientRepo.saveAndFlush(patient),PatientDTO.class);
+	}
+
 }
