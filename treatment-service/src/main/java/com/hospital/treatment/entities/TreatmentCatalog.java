@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 import com.hospital.treatment.enums.ClinicalArea;
-import com.hospital.treatment.enums.Dicease;
+import com.hospital.treatment.enums.Disease;
 
 import lombok.Data;
 
@@ -31,7 +31,7 @@ public class TreatmentCatalog {
 	private Boolean onPrivateExpences;
 	
 	@Enumerated(EnumType.STRING)
-	private Dicease diceaseCode;
+	private Disease diceaseCode;
 	
 	@Column
 	private String description;
