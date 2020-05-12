@@ -11,6 +11,7 @@ import com.hospital.appointment.events.producer.ProducerServiceTest;
 import com.hospital.appointment.repositories.PatientRepository;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.appointment.service.impl.AppointmentServiceImpl;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class ConsumerServiceTest {
     
     //TEST ONLY
     @RabbitListener(queues = "${queue.financial.save}")
-    public void handleQueueFinancialSaveMessageReception(AppointmentDTO myAppointment) {
+    public void handleQueueFinancialSaveMessageReception(AppointmentPayloadDTO myAppointment) {
     	log.info(" ============================  Message received in Queue queue-new-bill \n: " + myAppointment);
     	
     	log.info(" ============================  Checking if patient is financial approved after getting request for checking....");
@@ -43,7 +44,7 @@ public class ConsumerServiceTest {
     
   //TEST ONLY
     @RabbitListener(queues = "${queue.financial.cancel}")
-    public void handleQueueFinancialCancelMessageReception(AppointmentDTO myAppointment) {
+    public void handleQueueFinancialCancelMessageReception(AppointmentPayloadDTO myAppointment) {
     	log.info(" ============================  Message received in Queue queue-cancel-bill\n: " + myAppointment);
     	
     	log.info(" ============================  Canceling patient bill ....");
@@ -55,7 +56,7 @@ public class ConsumerServiceTest {
   //TEST ONLY
     
     @RabbitListener(queues = "${queue.treatment.request}")
-    public void handleQueueTreatmentRequestMessageReception(AppointmentDTO myAppointment) {
+    public void handleQueueTreatmentRequestMessageReception(AppointmentPayloadDTO myAppointment) {
     	
     	log.info(" ============================  Message received in queue-treatment-plan-new\n: " + myAppointment);
     	
@@ -66,7 +67,7 @@ public class ConsumerServiceTest {
     }
     
     @RabbitListener(queues = "${queue.treatment.cancel}")
-    public void handleQueueTreatmentCancelMessageReception(AppointmentDTO myAppointment) {
+    public void handleQueueTreatmentCancelMessageReception(AppointmentPayloadDTO myAppointment) {
     	
     	log.info(" ============================  Message received in treatment-plan-cancel\n: " + myAppointment);
     	

@@ -14,6 +14,7 @@ import com.hospital.appointment.events.producer.ProducerService;
 import com.hospital.appointment.repositories.AppointmentRepository;
 import com.hospital.appointment.repositories.PatientRepository;
 import com.hospital.appointment.service.AppointmentService;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		AppointmentDTO appointmentDTO=modelMapper.map(mySavedAppointment, AppointmentDTO.class);
 		
 		log.info("============================ Calling producer to send treatment plan Request ...");
-		myRabbitMQProducer.sendToRequestNewTreatmentPlan(myAppointment);
+		myRabbitMQProducer.sendToRequestNewTreatmentPlan(modelMapper.map(appointmentDTO, AppointmentPayloadDTO.class));
 		
 		return appointmentDTO;
 	}
@@ -88,11 +89,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public AppointmentDTO handleFinancialResultFailure(AppointmentDTO myPayload) {
+	public AppointmentDTO handleFinancialResultFailure(AppointmentDTO appointmentDTO) {
 		
 		log.info("============================ Calling producer to send Financial Cancel Bill ...");
-		this.myRabbitMQProducer.sendToCancelBill(myPayload);
-		return myPayload;
+		this.myRabbitMQProducer.sendToCancelBill(modelMapper.map(appointmentDTO, AppointmentPayloadDTO.class));
+		return appointmentDTO;
 	}
 
 	@Override
@@ -109,7 +110,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     		//if so set state to FINANCIAL_APPROVED
     		AppointmentDTO updatedAppointment= saveNewIncomingData(myAppointment, AppointmentState.TREATMENT_APPROVED);
     		
-    		this.myRabbitMQProducer.sendToSaveBills(myAppointment);
+    		this.myRabbitMQProducer.sendToSaveBills(modelMapper.map(updatedAppointment, AppointmentPayloadDTO.class));
     		
     		return updatedAppointment;
     	}else {
@@ -123,7 +124,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 	@Transactional
 	public AppointmentDTO handleTreatmentResultFailure(AppointmentDTO myAppointment) {
 		log.info("============================ Calling producer to send Treatment plan cancelation ...");
-		this.myRabbitMQProducer.sendToCancelTreatmentPlan(myAppointment);
+		this.myRabbitMQProducer.sendToCancelTreatmentPlan(modelMapper.map(myAppointment, AppointmentPayloadDTO.class));
 		return myAppointment;
 	}
 	

@@ -5,13 +5,11 @@ import com.hospital.payloads.AppointmentPayloadDTO;
 
 public interface ProducerService {
 
-	void sendToSaveBills(AppointmentDTO myAppointment);
+	void sendToSaveBills(AppointmentPayloadDTO myAppointment);
 
-	void sendToCancelTreatmentPlan(AppointmentDTO myAppointment);
+	void sendToCancelTreatmentPlan(AppointmentPayloadDTO myAppointment);
 
-	void sendToCancelBill(AppointmentDTO myAppointment);
-
-	void sendToRequestNewTreatmentPlan(AppointmentDTO myAppointment);
+	void sendToCancelBill(AppointmentPayloadDTO myAppointment);
 
 	void sendToRequestNewTreatmentPlan(AppointmentPayloadDTO myAppointment);
 }

@@ -44,27 +44,22 @@ public class ProducerServiceImpl implements ProducerService {
     private final RabbitTemplate rabbitTemplate;
     
     @Override
-    public void sendToSaveBills(AppointmentDTO myAppointment) {
+    public void sendToSaveBills(AppointmentPayloadDTO myAppointment) {
         rabbitTemplate.convertAndSend(directFinancialExchange, routingFinancialSave, myAppointment);
     }
     
     @Override
-    public void sendToCancelBill(AppointmentDTO myAppointment) {
+    public void sendToCancelBill(AppointmentPayloadDTO myAppointment) {
         rabbitTemplate.convertAndSend(directFinancialExchange, routingFinancialCancel, myAppointment);
-    }
-    
-    @Override
-    public void sendToRequestNewTreatmentPlan(AppointmentDTO myAppointment) {
-    	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentRequest, myAppointment);
-    }
-    
-    @Override
-    public void sendToCancelTreatmentPlan(AppointmentDTO myAppointment) {
-    	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentCancel, myAppointment);
     }
     
     @Override
     public void sendToRequestNewTreatmentPlan(AppointmentPayloadDTO myAppointment) {
     	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentRequest, myAppointment);
+    }
+    
+    @Override
+    public void sendToCancelTreatmentPlan(AppointmentPayloadDTO myAppointment) {
+    	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentCancel, myAppointment);
     }
 }
