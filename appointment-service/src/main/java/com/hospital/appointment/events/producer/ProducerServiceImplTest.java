@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 

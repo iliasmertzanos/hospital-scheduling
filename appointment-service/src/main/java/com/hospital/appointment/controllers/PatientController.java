@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.Disease;
@@ -17,6 +16,7 @@ import com.hospital.appointment.exception.PatientNotExistsException;
 import com.hospital.appointment.sagas.SagaOrchestrator;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.appointment.service.PatientService;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;

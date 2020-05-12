@@ -8,9 +8,9 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.ExecutionEventPoint;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 @Service
 public class CancelAppointmentSagaHandler implements SagaHandler {

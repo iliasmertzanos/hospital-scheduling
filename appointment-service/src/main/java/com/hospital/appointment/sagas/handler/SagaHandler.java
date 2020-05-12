@@ -8,11 +8,11 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.sagas.handler.SagaHandler.SagaStep;
 import com.hospital.appointment.service.AppointmentService;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

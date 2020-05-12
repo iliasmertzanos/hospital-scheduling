@@ -1,7 +1,7 @@
 package com.hospital.appointment.events.producer;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 public interface ProducerService {
 

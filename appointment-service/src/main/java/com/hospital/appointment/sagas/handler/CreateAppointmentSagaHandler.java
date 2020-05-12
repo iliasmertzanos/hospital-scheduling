@@ -10,10 +10,10 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.service.AppointmentService;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

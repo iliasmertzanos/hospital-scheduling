@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.enums.AppointmentState;
@@ -23,6 +22,7 @@ import com.hospital.appointment.repositories.AppointmentRepository;
 import com.hospital.appointment.sagas.SagaOrchestrator;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.appointment.service.PatientService;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

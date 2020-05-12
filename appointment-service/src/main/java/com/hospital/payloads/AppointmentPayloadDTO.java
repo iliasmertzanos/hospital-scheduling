@@ -1,4 +1,4 @@
-package com.hospital.appointment.dto;
+package com.hospital.payloads;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

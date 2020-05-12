@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
-import com.hospital.appointment.dto.AppointmentPayloadDTO;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.sagas.handler.SagaHandler;
+import com.hospital.payloads.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 
