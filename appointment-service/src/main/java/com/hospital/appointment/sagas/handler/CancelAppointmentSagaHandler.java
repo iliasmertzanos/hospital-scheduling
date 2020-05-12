@@ -16,7 +16,7 @@ import com.hospital.appointment.enums.ExecutionEventPoint;
 public class CancelAppointmentSagaHandler implements SagaHandler {
 
 	@Override
-	public AppointmentDTO manageNextSagaStep(AppointmentPayloadDTO myPayload) {
+	public AppointmentDTO manageNextSagaStep(AppointmentDTO myPayload,ExecutionEventPoint currentExecutionPoint) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,9 +1,10 @@
 package com.hospital.appointment.service.impl;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.hospital.appointment.dto.AppointmentDTO;
 import com.hospital.appointment.entities.Appointment;
@@ -64,25 +65,24 @@ public class AppointmentServiceImpl implements AppointmentService {
 	
 	@Override
 	@Transactional
-//	(noRollbackFor = {org.hibernate.StaleObjectStateException.class,ObjectOptimisticLockingFailureException.class,org.hibernate.dialect.lock.OptimisticEntityLockException.class})
     public AppointmentDTO handleFinancialResultReception(AppointmentDTO myAppointment) {
-    	log.info(" ============================  Message received in Queue queue-check-fin-result : " + myAppointment);
+    	log.info(" ============================  Message received in Appointment Service Queue queue-check-fin-result : " + myAppointment);
     	
     	log.info(" ============================   Checking if patient is financial approved after receiving answer from financial service....");
         //check if patient is financial covered
-    	if(myAppointment.getPatient().isFinancialApproved()) {
+    	if(StringUtils.isEmpty(myAppointment.getRejectionReason()) || myAppointment.getRejectionReason() ==null) {
     		
     		log.info("  ============================  Patient is ok");
-    		log.info("  ============================  Set status of appointment to FINANCIAL_APPROVED and request a new treatment plan ....");
+    		log.info("  ============================  Set status of appointment to APPROVED and request a new treatment plan ....");
     		//if so set state to FINANCIAL_APPROVED
-    		return changeAppointmentState(myAppointment, AppointmentState.APPROVED);
+    		return saveNewIncomingData(myAppointment, AppointmentState.APPROVED);
     		
     		//now send message to treatment service in order to get back
     		// a treatment plan (doctor, costs, room and clinic)
     	}else {
     		log.info(" ============================   Patient not ok");
     		log.info(" ============================   set status to REJECTED");
-    		return changeAppointmentState(myAppointment, AppointmentState.REJECTED);
+    		return saveNewIncomingData(myAppointment, AppointmentState.REJECTED);
     	}
     }
 
@@ -97,25 +97,25 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public AppointmentDTO handleTreatmentResultReception(AppointmentDTO myPayload) {
-		log.info(" ============================  Message received in Queue queue-treatment-plan-result: " + myPayload);
+	public AppointmentDTO handleTreatmentResultReception(AppointmentDTO myAppointment) {
+		log.info(" ============================  Message received in Appointment Service Queue: queue-treatment-plan-result: " + myAppointment);
     	
     	log.info(" ============================   Checking if treatment plan approved after receiving answer from treatment service....");
         //check if patient is financial covered
-    	if(myPayload.getRejectionReason()==null) {
+    	if(StringUtils.isEmpty(myAppointment.getRejectionReason()) || myAppointment.getRejectionReason() ==null) {
     		
     		log.info("  ============================  Appointment is ok");
     		log.info("  ============================  Set status of appointment to TREATMENT APPROVED and request a new treatment plan ....");
     		//if so set state to FINANCIAL_APPROVED
-    		AppointmentDTO updatedAppointment= changeAppointmentState(myPayload, AppointmentState.TREATMENT_APPROVED);
+    		AppointmentDTO updatedAppointment= saveNewIncomingData(myAppointment, AppointmentState.TREATMENT_APPROVED);
     		
-    		this.myRabbitMQProducer.sendToSaveBills(myPayload);
+    		this.myRabbitMQProducer.sendToSaveBills(myAppointment);
     		
     		return updatedAppointment;
     	}else {
     		log.info(" ============================   Patient not ok");
     		log.info(" ============================   set status to REJECTED");
-    		return changeAppointmentState(myPayload, AppointmentState.REJECTED);
+    		return saveNewIncomingData(myAppointment, AppointmentState.REJECTED);
     	}
 	}
 
@@ -127,12 +127,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 		return myAppointment;
 	}
 	
-    private AppointmentDTO changeAppointmentState(AppointmentDTO myAppointment, AppointmentState newState) {
-		Appointment myExistingAppointment=modelMapper.map(myAppointment,Appointment.class);
-		log.info(" ============================ Changing state to "+newState+" of Appointment:\n"+myExistingAppointment);
-		myExistingAppointment.setState(newState);
-		myExistingAppointment.setRejectionReason(myAppointment.getRejectionReason());
-		return modelMapper.map(myAppointmentRepo.saveAndFlush(myExistingAppointment),AppointmentDTO.class);
+    private AppointmentDTO saveNewIncomingData(AppointmentDTO myAppointment, AppointmentState newState) {
+    	Appointment myDBAppointment=this.myAppointmentRepo.findById(myAppointment.getId()).orElse(null);
+
+    	Appointment myAppointmentToSave=modelMapper.map(myAppointment,Appointment.class);
+    	myAppointmentToSave.setPatient(myDBAppointment.getPatient());
+    	myAppointmentToSave.setState(newState);
+    	
+		return modelMapper.map(myAppointmentRepo.saveAndFlush(myAppointmentToSave),AppointmentDTO.class);
 	}
 
 	@Override

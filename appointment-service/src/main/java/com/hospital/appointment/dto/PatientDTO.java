@@ -33,6 +33,4 @@ public class PatientDTO implements Serializable {
 	
 	private Disease disease;
 	
-	private boolean financialApproved;
-	
 }

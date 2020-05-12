@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 public interface SagaHandler {
 
-	AppointmentDTO manageNextSagaStep(AppointmentPayloadDTO myPayload);
+	AppointmentDTO manageNextSagaStep(AppointmentDTO myPayload,ExecutionEventPoint currentExecutionPoint);
 
 	List<ExecutionEventPoint> getExecutionPointsOwnedFromHandler();
 

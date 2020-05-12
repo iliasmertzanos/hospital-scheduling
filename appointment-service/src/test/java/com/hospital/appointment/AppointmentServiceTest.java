@@ -2,18 +2,11 @@ package com.hospital.appointment;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDateTime;
-
-import javax.transaction.Transactional;
-
-import org.hibernate.type.LocalDateTimeType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.hospital.appointment.dto.AppointmentDTO;
@@ -23,8 +16,8 @@ import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.enums.AppointmentState;
 import com.hospital.appointment.enums.Disease;
 import com.hospital.appointment.enums.ExecutionEventPoint;
-import com.hospital.appointment.enums.RejectionReason;
 import com.hospital.appointment.events.consumer.ConsumerServiceTest;
+import com.hospital.appointment.events.producer.ProducerService;
 import com.hospital.appointment.events.producer.ProducerServiceTest;
 import com.hospital.appointment.repositories.AppointmentRepository;
 import com.hospital.appointment.sagas.SagaOrchestrator;
@@ -50,6 +43,9 @@ public class AppointmentServiceTest {
 	@Autowired 
 	ProducerServiceTest myRabbitMQProducerTest;
 	
+	@Autowired 
+	ProducerService myRabbitMQProducer;
+	
 	@Autowired
 	ConsumerServiceTest myConsumerServiceTest;
 	
@@ -61,22 +57,21 @@ public class AppointmentServiceTest {
 	
 	@Test
 	public void test_optimistic_locking_on_treatment_plan_receptionr() throws InterruptedException {	
-//    	
     	PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setFinancialApproved(true);
 		myPatient.setDisease(Disease.ASTHMA);
 		
-		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-		myPayload.setPatient(myPatient);
-		myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+		AppointmentDTO myNewAppointment=new AppointmentDTO();
+		myNewAppointment.setPatient(myPatient);
 		
-		AppointmentDTO myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myPayload);
+		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
 		
+		Thread.sleep(1000);
+		
 		log.info("=============================  Waiting in test consumer to receive the financial check request ... ");
-//		while(!myConsumerServiceTest.financialCheckMessageReception) {
-//		}
+		
+		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
 		
 		log.info("=============================  Message received !!!!!!!!!!");
 		
@@ -85,8 +80,7 @@ public class AppointmentServiceTest {
 		myNewAppointment.setDoctorName("Humar Tamimi");
 		myNewAppointment.setRoom("23");
 		myNewAppointment.setTreatmentCosts(123445.56);
-		myNewAppointment.setStart(LocalDateTime.now());
-		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
+		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
 		
 		//Meanwhile a new change came and set appointment to canceled
 		Appointment myNewAppointmentEntity=myAppointmentRepo.findById(myNewAppointment.getId()).get();
@@ -114,23 +108,23 @@ public class AppointmentServiceTest {
 	public void test_new_Appointment_received_and_new_Treatment_Plan_Request() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setFinancialApproved(true);
 		myPatient.setDisease(Disease.ASTHMA);
 		
-		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-		myPayload.setPatient(myPatient);
-		myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+		AppointmentDTO myNewAppointment=new AppointmentDTO();
+		myNewAppointment.setPatient(myPatient);
 		
-		AppointmentDTO myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myPayload);
+		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
 		
+		Thread.sleep(1000);	
+		
 		log.info("=============================  Waiting in test consumer to receive the treatment plan request ... ");
-//		while(!myConsumerServiceTest.financialCheckMessageReception) {
-//		}
+		
+		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
 		
 		log.info("=============================  Message received !!!!!!!!!!");
 		
-		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
+		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
 		
 		log.info("=============================  Setting Treatment plan result");
 		myPayload.setClinic("Pathological");
@@ -138,7 +132,6 @@ public class AppointmentServiceTest {
 		myPayload.setDoctorName("Humar Tamimi");
 		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
-		myPayload.setStart(LocalDateTime.now());
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
 		myRabbitMQProducerTest.sendTreatmentPlanResult(myPayload);
@@ -148,6 +141,7 @@ public class AppointmentServiceTest {
     	Appointment myNewAppointmentEntity=myAppointmentRepo.findById(myNewAppointment.getId()).get();
 		
 		assertTrue(myNewAppointmentEntity.getState()==AppointmentState.TREATMENT_APPROVED);
+		assertTrue("Humar Tamimi".equals(myNewAppointmentEntity.getDoctorName()));
 		
 	}
 	
@@ -157,23 +151,24 @@ public class AppointmentServiceTest {
 		myPatient.setId(2L);
 		myPatient.setDisease(Disease.ASTHMA);
 		
-		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-		myPayload.setPatient(myPatient);
-		myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+		AppointmentDTO myNewAppointment=new AppointmentDTO();
+		myNewAppointment.setPatient(myPatient);
 		
-		AppointmentDTO myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myPayload);
+		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
 		
+		Thread.sleep(1000);	
+		
 		log.info("=============================  Waiting in test consumer to receive the treatment plan request ... ");
-//		while(!myConsumerServiceTest.financialCheckMessageReception) {
-//		}
+		
+		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
 		
 		log.info("=============================  Message received !!!!!!!!!!");
 		
-		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
+		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
 		
 		log.info("=============================  Setting Treatment plan result to rejected");
-		myPayload.setRejectionReason(RejectionReason.NO_AVAILABLE_DOCTOR);
+		myPayload.setRejectionReason("No available doctor");
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
 		myRabbitMQProducerTest.sendTreatmentPlanResult(myPayload);
@@ -190,23 +185,23 @@ public class AppointmentServiceTest {
 	public void test_new_Appointment_received_and_was_approved() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setFinancialApproved(true);
 		myPatient.setDisease(Disease.ASTHMA);
 		
-		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-		myPayload.setPatient(myPatient);
-		myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+		AppointmentDTO myNewAppointment=new AppointmentDTO();
+		myNewAppointment.setPatient(myPatient);
 		
-		AppointmentDTO myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myPayload);
+		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
 		
+		Thread.sleep(1000);	
+		
 		log.info("=============================  Waiting in test consumer to receive the treatment plan request ... ");
-//		while(!myConsumerServiceTest.financialCheckMessageReception) {
-//		}
+		
+		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
 		
 		log.info("=============================  Message received !!!!!!!!!!");
 		
-		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
+		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
 		
 		log.info("=============================  Setting Treatment plan result");
 		myPayload.setClinic("Pathological");
@@ -214,7 +209,6 @@ public class AppointmentServiceTest {
 		myPayload.setDoctorName("Humar Tamimi");
 		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
-		myPayload.setStart(LocalDateTime.now());
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
 		myRabbitMQProducerTest.sendTreatmentPlanResult(myPayload);
@@ -228,9 +222,8 @@ public class AppointmentServiceTest {
 		assertTrue(myConsumerServiceTest.financialSaveMessageReception);
 		
 		
-		log.info("=============================  Sending a MOCK Answer for a financial result and checl to simulate answer : ");
+		log.info("=============================  Sending a MOCK Answer for a financial result and check to simulate answer : ");
 		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
-		myPayload.getPatient().setFinancialApproved(true);
 		myRabbitMQProducerTest.sendCheckAnswerToAppointment(myPayload);
 		
 		Thread.sleep(1000);
@@ -240,28 +233,27 @@ public class AppointmentServiceTest {
 		assertTrue(myNewAppointment.getState()==AppointmentState.APPROVED);
 		
 	}
-	
+//	
 	@Test
 	public void testin_optimistic_locking_on_financial_check_reception() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setFinancialApproved(true);
 		myPatient.setDisease(Disease.ASTHMA);
 		
-		AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
-		myPayload.setPatient(myPatient);
-		myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
-		
-		AppointmentDTO myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myPayload);
+		AppointmentDTO myNewAppointment=new AppointmentDTO();
+		myNewAppointment.setPatient(myPatient);
+		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
 		
+		Thread.sleep(1000);	
+		
 		log.info("=============================  Waiting in test consumer to receive the treatment plan request ... ");
-//		while(!myConsumerServiceTest.financialCheckMessageReception) {
-//		}
+		
+		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
 		
 		log.info("=============================  Message received !!!!!!!!!!");
 		
-		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
+		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
 		
 		log.info("=============================  Setting Treatment plan result");
 		myPayload.setClinic("Pathological");
@@ -269,7 +261,6 @@ public class AppointmentServiceTest {
 		myPayload.setDoctorName("Humar Tamimi");
 		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
-		myPayload.setStart(LocalDateTime.now());
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
 		myRabbitMQProducerTest.sendTreatmentPlanResult(myPayload);
@@ -292,7 +283,6 @@ public class AppointmentServiceTest {
 		
 		log.info("=============================  Sending a MOCK Answer for a financial result and checl to simulate answer : ");
 		myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
-		myPayload.getPatient().setFinancialApproved(true);
 		myRabbitMQProducerTest.sendCheckAnswerToAppointment(myPayload);
 		
 		Thread.sleep(1000);
@@ -306,5 +296,20 @@ public class AppointmentServiceTest {
 		assertTrue(myConsumerServiceTest.treatmentCancelMessageReception);
 		
 	}
-
+//
+//	@Test
+//	public void testEnum() {
+//		com.hospital.treatment.dto.TreatmentPayloadDTO myPayload=new com.hospital.treatment.dto.TreatmentPayloadDTO();
+//		
+//		myPayload.setClinic("Pathological");
+//		myPayload.setDoctorId(443252L);
+//		myPayload.setDoctorName("Humar Tamimi");
+//		myPayload.setRoom("23");
+//		myPayload.setTreatmentCosts(123445.56);
+//		
+//		myPayload.setDisease("FOOBOO");
+//		
+//		log.info("======================Sending test Message to Treatment Service ....");
+//		this.myRabbitMQProducer.sendToRequestNewTreatmentPlan(myPayload);
+//	}
 }

@@ -2,6 +2,7 @@ package com.hospital.appointment.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -18,9 +19,11 @@ import org.hibernate.engine.jdbc.SerializableClobProxy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.AppointmentState;
+import com.hospital.appointment.enums.Disease;
 import com.hospital.appointment.enums.ExecutionEventPoint;
 import com.hospital.appointment.enums.RejectionReason;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -33,11 +36,7 @@ public class AppointmentPayloadDTO implements Serializable{
 
 	private Long id;
 	
-	private LocalDateTime start;
-	
-	private LocalDateTime end;
-	
-	private AppointmentState state=AppointmentState.PENDING;
+	private Date start;
 	
 	private Long doctorId;
 	
@@ -49,11 +48,9 @@ public class AppointmentPayloadDTO implements Serializable{
 	
 	private Double treatmentCosts;
 	
-	private ExecutionEventPoint executionEventPoint;
-	
-	private RejectionReason rejectionReason;
+	private String rejectionReason;
 	
     private Integer version;
-	
-	PatientDTO patient;
+    
+    private String disease;
 }

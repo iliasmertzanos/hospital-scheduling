@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.hospital.appointment.dto.AppointmentDTO;
+import com.hospital.appointment.dto.AppointmentPayloadDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -62,5 +63,8 @@ public class ProducerServiceImpl implements ProducerService {
     	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentCancel, myAppointment);
     }
     
-    
+    @Override
+    public void sendToRequestNewTreatmentPlan(AppointmentPayloadDTO myAppointment) {
+    	rabbitTemplate.convertAndSend(directTreatmentExchange, routingTreatmentRequest, myAppointment);
+    }
 }

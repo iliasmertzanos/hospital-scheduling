@@ -41,11 +41,11 @@ public class AppointmentController {
 		 if(myPatient==null) {
 			 throw new PatientNotExistsException("Patient with ID:"+ id +" does't exists.");
 		 }else {
-			 AppointmentPayloadDTO myPayload=new AppointmentPayloadDTO();
+			 AppointmentDTO myPayload=new AppointmentDTO();
 			 myPayload.setPatient(myPatient);
-			 myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+//			 myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 			 
-			return mySagaOrchestrator.handleAppointmentSaga(myPayload);
+			return mySagaOrchestrator.handleAppointmentSaga(myPayload,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		 }
 	 }
 }

@@ -39,8 +39,8 @@ public class SagaOrchestrator {
 		return this.sagaHandlerRegistry.get(eventPoint);
 	}
 	
-	public AppointmentDTO handleAppointmentSaga(AppointmentPayloadDTO myPayload) {
-		SagaHandler mySagaHandler=this.getSagaHandler(myPayload.getExecutionEventPoint());
-		return mySagaHandler.manageNextSagaStep(myPayload);
+	public AppointmentDTO handleAppointmentSaga(AppointmentDTO myPayload,ExecutionEventPoint currentExecutionPoint) {
+		SagaHandler mySagaHandler=this.getSagaHandler(currentExecutionPoint);
+		return mySagaHandler.manageNextSagaStep(myPayload,currentExecutionPoint);
 	}
 }

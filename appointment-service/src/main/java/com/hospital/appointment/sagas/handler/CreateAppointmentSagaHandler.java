@@ -28,16 +28,13 @@ public class CreateAppointmentSagaHandler implements SagaHandler {
 	private final  ModelMapper modelMapper=new ModelMapper();
 	
 	private LinkedHashMap<ExecutionEventPoint,SagaStep> sagaDefinition;
-
-	private Object object;
 	
 	@Override
-	public AppointmentDTO manageNextSagaStep(AppointmentPayloadDTO myPayload) {
-		ExecutionEventPoint currentExecutionPoint= myPayload.getExecutionEventPoint();
-		log.info("  ============================ RECEIVED AppointmentPayloadDTO in CreateAppointmentSagaHandler: "+myPayload+ " with status: "+myPayload.getState());
+	public AppointmentDTO manageNextSagaStep(AppointmentDTO myPayload,ExecutionEventPoint currentExecutionPoint) {
 		
+		log.info("  ============================ RECEIVED AppointmentDTO in CreateAppointmentSagaHandler: "+myPayload);		
 		AppointmentDTO myAppointment=modelMapper.map(myPayload, AppointmentDTO.class);
-		log.info("  ============================ RECEIVED AppointmentPayloadDTO in CreateAppointmentSagaHandler MAPPED: "+myAppointment);
+		log.info("  ============================ RECEIVED AppointmentDTO in CreateAppointmentSagaHandler MAPPED: "+myAppointment);
 		
 		try{
 			return sagaDefinition.get(currentExecutionPoint).handleReply(myAppointment);

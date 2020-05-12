@@ -1,5 +1,6 @@
 package com.hospital.appointment.entities;
 
+import java.sql.Date;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -28,10 +29,7 @@ public class Appointment {
 	private Long id;
 	
 	@Column
-	private LocalDateTime start;
-	
-	@Column
-	private LocalDateTime end;
+	private Date start;
 	
 	@Enumerated(EnumType.STRING)
 	private AppointmentState state=AppointmentState.PENDING;
@@ -51,8 +49,8 @@ public class Appointment {
 	@Column(name="treatment_costs")
 	private Double treatmentCosts=new Double(0);
 	
-	@Enumerated(EnumType.STRING)
-	private RejectionReason rejectionReason;
+	@Column(name="rejection_reason")
+	private String rejectionReason;
 	
 	@Version
     private Integer version=1;
