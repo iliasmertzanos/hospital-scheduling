@@ -55,7 +55,7 @@ public class ConsumerServiceTest {
     
   //TEST ONLY
     
-    @RabbitListener(queues = "${queue.treatment.request}")
+//    @RabbitListener(queues = "${queue.treatment.request}")
     public void handleQueueTreatmentRequestMessageReception(AppointmentPayloadDTO myAppointment) {
     	
     	log.info(" ============================  Message received in queue-treatment-plan-new\n: " + myAppointment);
@@ -66,7 +66,7 @@ public class ConsumerServiceTest {
     	
     }
     
-    @RabbitListener(queues = "${queue.treatment.cancel}")
+//    @RabbitListener(queues = "${queue.treatment.cancel}")
     public void handleQueueTreatmentCancelMessageReception(AppointmentPayloadDTO myAppointment) {
     	
     	log.info(" ============================  Message received in treatment-plan-cancel\n: " + myAppointment);

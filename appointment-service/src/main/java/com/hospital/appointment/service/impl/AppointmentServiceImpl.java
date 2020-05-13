@@ -1,12 +1,12 @@
 package com.hospital.appointment.service.impl;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.hospital.appointment.dto.AppointmentDTO;
+import com.hospital.appointment.dto.PatientDTO;
 import com.hospital.appointment.entities.Appointment;
 import com.hospital.appointment.entities.Patient;
 import com.hospital.appointment.enums.AppointmentState;
@@ -31,6 +31,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 	private final AppointmentRepository myAppointmentRepo;
 	
 	private  ModelMapper modelMapper=new ModelMapper() ;
+
+	@Override
+	@Transactional
+	public AppointmentDTO getAppointment(Long id) {
+		Appointment myExistingAppointment= this.myAppointmentRepo.findById(id).orElse(null);
+		
+		if(myExistingAppointment==null)
+			return null;
+		return modelMapper.map(myExistingAppointment,AppointmentDTO.class);
+	}
 
 	@Override
 	@Transactional
@@ -59,7 +69,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		AppointmentDTO appointmentDTO=modelMapper.map(mySavedAppointment, AppointmentDTO.class);
 		
 		log.info("============================ Calling producer to send treatment plan Request ...");
-		myRabbitMQProducer.sendToRequestNewTreatmentPlan(modelMapper.map(appointmentDTO, AppointmentPayloadDTO.class));
+		myRabbitMQProducer.sendToRequestNewTreatmentPlan(this.mapToPayload(appointmentDTO));
 		
 		return appointmentDTO;
 	}
@@ -89,11 +99,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public AppointmentDTO handleFinancialResultFailure(AppointmentDTO appointmentDTO) {
+	public AppointmentDTO handleFinancialResultFailure(AppointmentDTO myAppointment) {
+		myAppointment=getActuallImageOfAppointment(myAppointment);
 		
 		log.info("============================ Calling producer to send Financial Cancel Bill ...");
-		this.myRabbitMQProducer.sendToCancelBill(modelMapper.map(appointmentDTO, AppointmentPayloadDTO.class));
-		return appointmentDTO;
+		this.myRabbitMQProducer.sendToCancelBill(this.mapToPayload(myAppointment));
+		return myAppointment;
 	}
 
 	@Override
@@ -110,7 +121,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     		//if so set state to FINANCIAL_APPROVED
     		AppointmentDTO updatedAppointment= saveNewIncomingData(myAppointment, AppointmentState.TREATMENT_APPROVED);
     		
-    		this.myRabbitMQProducer.sendToSaveBills(modelMapper.map(updatedAppointment, AppointmentPayloadDTO.class));
+    		this.myRabbitMQProducer.sendToSaveBills(this.mapToPayload(updatedAppointment));
     		
     		return updatedAppointment;
     	}else {
@@ -122,9 +133,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	@Transactional
-	public AppointmentDTO handleTreatmentResultFailure(AppointmentDTO myAppointment) {
+	public AppointmentDTO handleTreatmentResultFailure(AppointmentDTO myAppointment) {		
+		myAppointment=getActuallImageOfAppointment(myAppointment);
+		
 		log.info("============================ Calling producer to send Treatment plan cancelation ...");
-		this.myRabbitMQProducer.sendToCancelTreatmentPlan(modelMapper.map(myAppointment, AppointmentPayloadDTO.class));
+		this.myRabbitMQProducer.sendToCancelTreatmentPlan(this.mapToPayload(myAppointment));
 		return myAppointment;
 	}
 	
@@ -137,15 +150,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     	
 		return modelMapper.map(myAppointmentRepo.saveAndFlush(myAppointmentToSave),AppointmentDTO.class);
 	}
-
-	@Override
-	@Transactional
-	public AppointmentDTO getAppointment(Long id) {
-		Appointment myExistingAppointment= this.myAppointmentRepo.findById(id).orElse(null);
+	
+	private AppointmentPayloadDTO mapToPayload(AppointmentDTO myAppointment) {
+		AppointmentPayloadDTO myPayload=modelMapper.map(myAppointment, AppointmentPayloadDTO.class);
 		
-		if(myExistingAppointment==null)
-			return null;
-		return modelMapper.map(myExistingAppointment,AppointmentDTO.class);
+		log.info("Mapping Source AppointmentDTO:"+myAppointment);
+		myPayload.setDisease(myAppointment.getPatient().getDisease().toString());
+		myPayload.setPatientId(myAppointment.getPatient().getId());
+		return myPayload;
+	}
+	
+	private AppointmentDTO getActuallImageOfAppointment(AppointmentDTO myAppointment){
+		Appointment myDBAppointment=this.myAppointmentRepo.findById(myAppointment.getId()).orElse(null);
+		
+    	myAppointment.setPatient(modelMapper.map(myDBAppointment.getPatient(),PatientDTO.class));
+    	
+    	return myAppointment;
+    	
 	}
 	
 }

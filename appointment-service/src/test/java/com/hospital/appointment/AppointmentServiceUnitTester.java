@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(classes = AppointmentApplication.class)
 @RunWith(SpringRunner.class)
 @Slf4j
-public class AppointmentServiceTest {
+public class AppointmentServiceUnitTester {
 	
 	@Autowired
 	AppointmentService myAppointmentService;
@@ -108,7 +108,7 @@ public class AppointmentServiceTest {
 	public void test_new_Appointment_received_and_new_Treatment_Plan_Request() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
 		myPatient.setId(2L);
-		myPatient.setDisease(Disease.ASTHMA);
+		myPatient.setDisease(Disease.FOOBOO);
 		
 		AppointmentDTO myNewAppointment=new AppointmentDTO();
 		myNewAppointment.setPatient(myPatient);
@@ -233,7 +233,7 @@ public class AppointmentServiceTest {
 		assertTrue(myNewAppointment.getState()==AppointmentState.APPROVED);
 		
 	}
-//	
+	
 	@Test
 	public void testin_optimistic_locking_on_financial_check_reception() throws InterruptedException {
 		PatientDTO myPatient=new PatientDTO();
@@ -296,20 +296,4 @@ public class AppointmentServiceTest {
 		assertTrue(myConsumerServiceTest.treatmentCancelMessageReception);
 		
 	}
-//
-//	@Test
-//	public void testEnum() {
-//		com.hospital.treatment.dto.TreatmentPayloadDTO myPayload=new com.hospital.treatment.dto.TreatmentPayloadDTO();
-//		
-//		myPayload.setClinic("Pathological");
-//		myPayload.setDoctorId(443252L);
-//		myPayload.setDoctorName("Humar Tamimi");
-//		myPayload.setRoom("23");
-//		myPayload.setTreatmentCosts(123445.56);
-//		
-//		myPayload.setDisease("FOOBOO");
-//		
-//		log.info("======================Sending test Message to Treatment Service ....");
-//		this.myRabbitMQProducer.sendToRequestNewTreatmentPlan(myPayload);
-//	}
 }

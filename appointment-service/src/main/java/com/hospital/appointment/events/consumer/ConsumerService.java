@@ -24,7 +24,6 @@ public class ConsumerService {
     @RabbitListener(queues = "${queue.financial.result}")
     public void handleQueueFinancialResultMessageReception(AppointmentPayloadDTO myPayload) {
     	log.info(" ============================  Message received in Appointment Service Queue queue-check-fin-result : " + myPayload);
-//    	myPayload.setExecutionEventPoint(ExecutionEventPoint.FINANCIAL_RESULT_RECEIVED);
     	
     	mySagaOrchestrator.handleAppointmentSaga(modelMapper.map(myPayload,AppointmentDTO.class),ExecutionEventPoint.FINANCIAL_RESULT_RECEIVED);
     }
@@ -32,7 +31,6 @@ public class ConsumerService {
     @RabbitListener(queues = "${queue.treatment.result}")
     public void handleQueueTreatmentResultMessageReception(AppointmentPayloadDTO myPayload) {
     	log.info(" ============================  Message received in Appointment Service Queue queue-treatment-plan-result : " + myPayload);
-//    	myPayload.setExecutionEventPoint();
     	
     	mySagaOrchestrator.handleAppointmentSaga(modelMapper.map(myPayload,AppointmentDTO.class),ExecutionEventPoint.TREATMENT_RESULT_RECEIVED);
     }

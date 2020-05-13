@@ -53,4 +53,6 @@ public class AppointmentPayloadDTO implements Serializable{
     private Integer version;
     
     private String disease;
+    
+    private Long patientId;
 }
