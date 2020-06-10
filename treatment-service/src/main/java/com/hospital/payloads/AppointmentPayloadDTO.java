@@ -1,7 +1,8 @@
-package com.hospital.treatment.dto;
+package com.hospital.payloads;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.EnumType;
@@ -36,17 +37,19 @@ public class AppointmentPayloadDTO implements Serializable{
 	
 	private String doctorName;
 	
-	private String room;
-	
 	private String clinic;
 	
 	private Double treatmentCosts;
 	
-	private RejectionReason rejectionReason;
-	
     private Integer version;
     
-    private Disease disease;
+    private String disease;
     
-    private PlanPeriod planPeriod;
+    private String rejectionReason;
+    
+    private Date date;
+    
+    private Boolean onPrivateExpences;
+    
+    private Long patientId;
 }

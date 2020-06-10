@@ -23,7 +23,7 @@ public enum Disease {
 	,HEART_VALV("Heart valve disease")
 	,Coronary_artery("Coronary artery disease")
 	,Myocardial_infarction("Myocardial infarction")
-	
+	,PARADONTITIS("")
 	;
 
 	String description;

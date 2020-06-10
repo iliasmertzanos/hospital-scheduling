@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(classes = AppointmentApplication.class)
 @RunWith(SpringRunner.class)
 @Slf4j
-public class AppointmentAsychronousComunicationTester {
+public class AppointmentAsychronousCommunicationTester {
 	
 	@Autowired
 	AppointmentService myAppointmentService;
@@ -65,33 +65,12 @@ public class AppointmentAsychronousComunicationTester {
 		
 		myNewAppointment=mySagaOrchestrator.handleAppointmentSaga(myNewAppointment,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
 		assertNotNull(myNewAppointment);
-		
-//		Thread.sleep(1000);	
-//		
-//		log.info("=============================  Waiting in test consumer to receive the treatment plan request ... ");
-//		
-//		assertTrue(myConsumerServiceTest.treatmentPlanRequestMessageReception);
-//		
-//		log.info("=============================  Message received !!!!!!!!!!");
-//		
-//		AppointmentPayloadDTO myPayload=modelMapper.map(myNewAppointment,AppointmentPayloadDTO.class);
-//		
-//		log.info("=============================  Setting Treatment plan result");
-//		myPayload.setClinic("Pathological");
-//		myPayload.setDoctorId(443252L);
-//		myPayload.setDoctorName("Humar Tamimi");
-//		myPayload.setRoom("23");
-//		myPayload.setTreatmentCosts(123445.56);
-//		
-//		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
-//		myRabbitMQProducerTest.sendTreatmentPlanResult(myPayload);
     	
     	Thread.sleep(3000);
     	
     	Appointment myNewAppointmentEntity=myAppointmentRepo.findById(myNewAppointment.getId()).get();
 		
 		assertTrue(myNewAppointmentEntity.getState()==AppointmentState.REJECTED);
-		assertTrue("Humar Tamimi".equals(myNewAppointmentEntity.getDoctorName()));
 		
 	}
 

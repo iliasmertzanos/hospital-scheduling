@@ -42,8 +42,6 @@ public class AppointmentPayloadDTO implements Serializable{
 	
 	private String doctorName;
 	
-	private String room;
-	
 	private String clinic;
 	
 	private Double treatmentCosts;
@@ -55,4 +53,6 @@ public class AppointmentPayloadDTO implements Serializable{
     private String disease;
     
     private Long patientId;
+    
+    private Boolean onPrivateExpences;
 }

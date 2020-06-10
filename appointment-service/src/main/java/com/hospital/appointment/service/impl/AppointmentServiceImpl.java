@@ -93,6 +93,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     	}else {
     		log.info(" ============================   Patient not ok");
     		log.info(" ============================   set status to REJECTED");
+    		//TODO throw new exception to trigger compensation measures
     		return saveNewIncomingData(myAppointment, AppointmentState.REJECTED);
     	}
     }
@@ -127,6 +128,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     	}else {
     		log.info(" ============================   Patient not ok");
     		log.info(" ============================   set status to REJECTED");
+    		//TODO throw new exception to trigger compensation measures
     		return saveNewIncomingData(myAppointment, AppointmentState.REJECTED);
     	}
 	}

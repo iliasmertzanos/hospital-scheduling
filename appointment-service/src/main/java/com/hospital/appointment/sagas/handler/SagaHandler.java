@@ -32,7 +32,7 @@ public interface SagaHandler {
 		BiFunction<AppointmentService,AppointmentDTO,AppointmentDTO> onFailure;
 		AppointmentService myAppointmentService;
 		
-		public SagaStep(BiFunction<AppointmentService,AppointmentDTO,AppointmentDTO> onReply, 
+		protected SagaStep(BiFunction<AppointmentService,AppointmentDTO,AppointmentDTO> onReply, 
 				BiFunction<AppointmentService,AppointmentDTO,AppointmentDTO> onFailure, 
 				AppointmentService myAppointmentService) {
 			this.onFailure=onFailure;
@@ -40,11 +40,11 @@ public interface SagaHandler {
 			this.myAppointmentService=myAppointmentService;
 		}
 		
-		public AppointmentDTO handleReply(AppointmentDTO myAppointment) {
+		protected AppointmentDTO handleReply(AppointmentDTO myAppointment) {
 			return this.onReply.apply(this.myAppointmentService, myAppointment);
 		}
 		
-		public AppointmentDTO handleFailure(AppointmentDTO myAppointment) {
+		protected AppointmentDTO handleFailure(AppointmentDTO myAppointment) {
 			if(this.onFailure==null) return myAppointment;
 			else return this.onFailure.apply(this.myAppointmentService, myAppointment);					
 		}

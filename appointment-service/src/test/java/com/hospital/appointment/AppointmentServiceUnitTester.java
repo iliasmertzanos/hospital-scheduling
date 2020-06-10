@@ -130,7 +130,6 @@ public class AppointmentServiceUnitTester {
 		myPayload.setClinic("Pathological");
 		myPayload.setDoctorId(443252L);
 		myPayload.setDoctorName("Humar Tamimi");
-		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
@@ -207,7 +206,6 @@ public class AppointmentServiceUnitTester {
 		myPayload.setClinic("Pathological");
 		myPayload.setDoctorId(443252L);
 		myPayload.setDoctorName("Humar Tamimi");
-		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");
@@ -259,7 +257,6 @@ public class AppointmentServiceUnitTester {
 		myPayload.setClinic("Pathological");
 		myPayload.setDoctorId(443252L);
 		myPayload.setDoctorName("Humar Tamimi");
-		myPayload.setRoom("23");
 		myPayload.setTreatmentCosts(123445.56);
 		
 		log.info("=============================  Sending a MOCK Answer for a Treatment plan result to simulate answer : ");

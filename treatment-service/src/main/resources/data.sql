@@ -33,3 +33,4 @@ INSERT INTO treatment_catalog (tc_id, clinical_area, description, dicease_code, 
 
 
 
+
