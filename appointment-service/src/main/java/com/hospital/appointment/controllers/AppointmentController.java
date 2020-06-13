@@ -1,6 +1,8 @@
 package com.hospital.appointment.controllers;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +33,7 @@ public class AppointmentController {
 	private final SagaOrchestrator mySagaOrchestrator;
 	
 	@PostMapping("/patient/{id}/dicease/{dicease}")
-	public void saveNewAppointment( @PathVariable Long id ,@PathVariable Disease disease)  {
+	public ResponseEntity<Integer> saveNewAppointment( @PathVariable Long id ,@PathVariable Disease disease)  {
 		//check if patient exists
 		PatientDTO myPatient=myPatientService.getById(id);
 		 
@@ -42,6 +44,7 @@ public class AppointmentController {
 			AppointmentDTO myPayload=new AppointmentDTO();
 			myPayload.setPatient(myPatient);			 
 			mySagaOrchestrator.handleAppointmentSaga(myPayload,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+			return new ResponseEntity<Integer>(HttpStatus.OK);
 		}
 	}
 }
