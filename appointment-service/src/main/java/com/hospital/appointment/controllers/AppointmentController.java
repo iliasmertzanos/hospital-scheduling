@@ -30,22 +30,18 @@ public class AppointmentController {
 	private final PatientService myPatientService;
 	private final SagaOrchestrator mySagaOrchestrator;
 	
-	private ModelMapper modelMapper=new ModelMapper();
-	
-	 @PostMapping("/patient/{id}/dicease/{dicease}")
-	 public AppointmentDTO saveNewAppointment( @PathVariable Long id ,@PathVariable Disease disease)  {
-		 //check if patient exists
-		 PatientDTO myPatient=myPatientService.getById(id);
+	@PostMapping("/patient/{id}/dicease/{dicease}")
+	public void saveNewAppointment( @PathVariable Long id ,@PathVariable Disease disease)  {
+		//check if patient exists
+		PatientDTO myPatient=myPatientService.getById(id);
 		 
-		 //if true save new Appointment and update patient appointment list 
-		 if(myPatient==null) {
-			 throw new PatientNotExistsException("Patient with ID:"+ id +" does't exists.");
-		 }else {
-			 AppointmentDTO myPayload=new AppointmentDTO();
-			 myPayload.setPatient(myPatient);
-//			 myPayload.setExecutionEventPoint(ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
-			 
-			return mySagaOrchestrator.handleAppointmentSaga(myPayload,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
-		 }
-	 }
+		//if true save new Appointment and update patient appointment list 
+		if(myPatient==null) {
+			throw new PatientNotExistsException("Patient with ID:"+ id +" doesn't exist.");
+		}else {
+			AppointmentDTO myPayload=new AppointmentDTO();
+			myPayload.setPatient(myPatient);			 
+			mySagaOrchestrator.handleAppointmentSaga(myPayload,ExecutionEventPoint.CREATE_APPOINTMENT_RECEIVED);
+		}
+	}
 }
