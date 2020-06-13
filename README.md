@@ -3,6 +3,10 @@ This is my actual project currently working on.
 
 This application provides functionalities based on microservices architecture, so that patient treatment appointments can be scheduled taking into account the plan and availability of the medical doctors as well as the free capacities of the hospital.
 
+
+## Architecture Diagram
+![hospital-scheduling_arch.png](hospital-scheduling_arch.png)
+
 ## Stack
 - **Java 1.8**
 - **Spring Boot**
